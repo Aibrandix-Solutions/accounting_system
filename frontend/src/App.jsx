@@ -9,6 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
+          <Route path="vendor-bills" element={<div className="p-6"><h2 className="text-2xl font-bold">Vendor Bills</h2><p className="text-[var(--text-muted)]">Manage your vendor bills here.</p></div>} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Receipt, Settings, Bell, Search, User, Menu, X, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Receipt, Settings, Bell, Search, User, Menu, X, Sun, Moon, ScrollText } from 'lucide-react';
 
 const DashboardLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -9,7 +9,8 @@ const DashboardLayout = () => {
 
     const navigation = [
         { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
-        { name: 'Invoices', icon: Receipt, path: '/invoices' },
+        { name: 'Invoice Bills', icon: Receipt, path: '/invoices' },
+        { name: 'Vendor Bills', icon: ScrollText, path: '/vendor-bills' },
         { name: 'Settings', icon: Settings, path: '/settings' },
     ];
 
@@ -29,7 +30,7 @@ const DashboardLayout = () => {
         <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-main)] flex transition-colors duration-300">
             {/* Sidebar */}
             <aside
-                className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[var(--bg-card)] border-r border-[var(--border-color)] transform transition-transform duration-200 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+                className={`fixed lg:static inset-y-0 left-0 z-50 w-72 bg-[var(--bg-card)] border-r border-[var(--border-color)] transform transition-transform duration-200 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
                     }`}
             >
                 <div className="h-16 flex items-center px-6 border-b border-[var(--border-color)]">
@@ -52,8 +53,8 @@ const DashboardLayout = () => {
                                 key={item.name}
                                 to={item.path}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
-                                        ? 'bg-[var(--primary)] text-white shadow-lg shadow-indigo-500/20'
-                                        : 'text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]'
+                                    ? 'bg-[var(--primary)] text-white shadow-lg shadow-indigo-500/20'
+                                    : 'text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]'
                                     }`}
                             >
                                 <item.icon size={20} />
