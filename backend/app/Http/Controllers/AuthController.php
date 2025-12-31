@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -32,28 +32,29 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+    $credentials = $request->only('email', 'password');
 
-        if (!$token = Auth::guard('api')->attempt($credentials)) {
-            return response()->json(['error' => 'Invalid credentials'], 401);
-        }
+    if (!$token = JWTAuth::attempt($credentials)) {
+        return response()->json(['error' => 'Invalid credentials'], 401);
+    }
 
-        return response()->json([
-            'token' => $token,
-            'user' => Auth::guard('api')->user()
-        ]);
+    return response()->json([
+        'token' => $token,
+        'user' => auth()->user()
+    ]);
     }
 
     public function me()
-    {
-        return response()->json(Auth::guard('api')->user());
-    }
+{
+    return response()->json(auth()->user());
+}
 
-    public function logout()
-    {
-        Auth::guard('api')->logout();
-        return response()->json(['message' => 'Logged out successfully']);
-    }
+public function logout()
+{
+    JWTAuth::invalidate(JWTAuth::getToken());
+    return response()->json(['message' => 'Logged out successfully']);
+}
+
 }
 
 
