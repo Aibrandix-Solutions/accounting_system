@@ -58,9 +58,9 @@ const Dashboard = () => {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
                     <h2 className="text-3xl font-bold bg-gradient-to-r from-[var(--text-main)] to-[var(--text-muted)] bg-clip-text text-transparent">
-                        Good Morning, Admin!
+                        Good Morning, Super Admin!
                     </h2>
-                    <p className="text-[var(--text-muted)] mt-1">Here's your financial overview.</p>
+                    <p className="text-[var(--text-muted)] mt-1">Here's your system overview.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <button className="flex items-center gap-2 px-4 py-2 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl hover:bg-[var(--bg-hover)] transition-colors text-sm font-medium">

@@ -1,17 +1,37 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Receipt, Settings, Bell, Search, User, Menu, X, Sun, Moon, ScrollText } from 'lucide-react';
+import {
+    LayoutDashboard,
+    Building2,
+    Shield,
+    Users,
+    Settings,
+    BarChart3,
+    FileText,
+    Bell,
+    Search,
+    Menu,
+    X,
+    Sun,
+    Moon,
+    LogOut
+} from 'lucide-react';
 
-const DashboardLayout = () => {
+const SuperAdminLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [isDarkMode, setIsDarkMode] = useState(true);
     const location = useLocation();
 
     const navigation = [
-        { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
-        { name: 'Invoice Bills', icon: Receipt, path: '/invoices' },
-        { name: 'Vendor Bills', icon: ScrollText, path: '/vendor-bills' },
-        { name: 'Settings', icon: Settings, path: '/settings' },
+        { name: 'Dashboard', icon: LayoutDashboard, path: '/super-admin' },
+        { name: 'Companies', icon: Building2, path: '/super-admin/companies' },
+        { name: 'Invoice Bills', icon: Receipt, path: '/super-admin/invoices' },
+        { name: 'Vendor Bills', icon: FileText, path: '/super-admin/vendor-bills' },
+        { name: 'Admins', icon: Shield, path: '/super-admin/admins' },
+        { name: 'Users', icon: Users, path: '/super-admin/users' },
+        { name: 'Reports', icon: BarChart3, path: '/super-admin/reports' },
+        { name: 'Audit Logs', icon: FileText, path: '/super-admin/audit-logs' },
+        { name: 'System Settings', icon: Settings, path: '/super-admin/settings' },
     ];
 
     useEffect(() => {
@@ -34,8 +54,8 @@ const DashboardLayout = () => {
                     }`}
             >
                 <div className="h-16 flex items-center px-6 border-b border-[var(--border-color)]">
-                    <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
-                        FinDash
+                    <h1 className="text-xl font-bold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
+                        Super Admin
                     </h1>
                     <button
                         className="ml-auto lg:hidden text-[var(--text-muted)] hover:text-[var(--text-main)]"
@@ -47,7 +67,7 @@ const DashboardLayout = () => {
 
                 <nav className="p-4 space-y-2">
                     {navigation.map((item) => {
-                        const isActive = location.pathname === item.path;
+                        const isActive = location.pathname === item.path || (item.path !== '/super-admin' && location.pathname.startsWith(item.path));
                         return (
                             <Link
                                 key={item.name}
@@ -63,6 +83,8 @@ const DashboardLayout = () => {
                         );
                     })}
                 </nav>
+
+                {/* User Profile in Sidebar Bottom (Optional) */}
             </aside>
 
             {/* Main Content */}
@@ -81,7 +103,7 @@ const DashboardLayout = () => {
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-[var(--primary)] transition-colors" size={18} />
                             <input
                                 type="text"
-                                placeholder="Search analytics, transactions..."
+                                placeholder="Search companies, users..."
                                 className="w-full bg-[var(--bg-dark)] border border-[var(--border-color)] text-[var(--text-main)] rounded-full py-2 pl-10 pr-4 focus:outline-none focus:border-[var(--primary)] transition-all placeholder:text-slate-500"
                             />
                         </div>
@@ -104,11 +126,11 @@ const DashboardLayout = () => {
 
                         <div className="flex items-center gap-3 pl-4 border-l border-[var(--border-color)]">
                             <div className="text-right hidden sm:block">
-                                <p className="text-sm font-semibold">Admin User</p>
-                                <p className="text-xs text-[var(--text-muted)]">Administrator</p>
+                                <p className="text-sm font-semibold">Master Admin</p>
+                                <p className="text-xs text-[var(--text-muted)]">Super User</p>
                             </div>
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--primary)] to-purple-500 flex items-center justify-center text-white font-bold shadow-lg ring-2 ring-[var(--bg-card)]">
-                                AU
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-red-500 to-orange-500 flex items-center justify-center text-white font-bold shadow-lg ring-2 ring-[var(--bg-card)]">
+                                SA
                             </div>
                         </div>
                     </div>
@@ -123,4 +145,4 @@ const DashboardLayout = () => {
     );
 };
 
-export default DashboardLayout;
+export default SuperAdminLayout;
