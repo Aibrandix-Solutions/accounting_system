@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Receipt, Settings, Bell, Search, User, Menu, X, Sun, Moon, ScrollText, Shield } from 'lucide-react';
+import { LayoutDashboard, Receipt, Settings, Bell, Search, User, Menu, X, Sun, Moon, ScrollText, Shield, Building2, Users, BarChart3, FileText } from 'lucide-react';
 
 const DashboardLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -9,10 +9,14 @@ const DashboardLayout = () => {
 
     const navigation = [
         { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
+        { name: 'Companies', icon: Building2, path: '/companies' },
         { name: 'Invoice Bills', icon: Receipt, path: '/invoices' },
         { name: 'Vendor Bills', icon: ScrollText, path: '/vendor-bills' },
+        { name: 'Admins', icon: Shield, path: '/admins' },
+        { name: 'Users', icon: Users, path: '/users' },
+        { name: 'Reports', icon: BarChart3, path: '/reports' },
+        { name: 'Audit Logs', icon: FileText, path: '/audit-logs' },
         { name: 'Settings', icon: Settings, path: '/settings' },
-        { name: 'Super Admin Console', icon: Shield, path: '/super-admin' },
     ];
 
     useEffect(() => {
