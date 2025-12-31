@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Receipt, Settings, Bell, Search, User, Menu, X, Sun, Moon, ScrollText } from 'lucide-react';
+import { LayoutDashboard, Receipt, Settings, Bell, Search, User, Menu, X, Sun, Moon, ScrollText, Shield } from 'lucide-react';
 
 const DashboardLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -12,6 +12,7 @@ const DashboardLayout = () => {
         { name: 'Invoice Bills', icon: Receipt, path: '/invoices' },
         { name: 'Vendor Bills', icon: ScrollText, path: '/vendor-bills' },
         { name: 'Settings', icon: Settings, path: '/settings' },
+        { name: 'Super Admin Console', icon: Shield, path: '/super-admin' },
     ];
 
     useEffect(() => {
