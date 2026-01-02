@@ -1,19 +1,27 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Receipt, Settings, Bell, Search, User, Menu, X, Sun, Moon, ScrollText, Shield, Building2, Users, BarChart3, FileText } from 'lucide-react';
+import { LayoutDashboard, Receipt, Settings, Bell, Search, User, Menu, X, Sun, Moon, ScrollText, Shield, Building2, Users, BarChart3, FileText, ChevronDown, ChevronRight, Lock } from 'lucide-react';
 
 const DashboardLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [isDarkMode, setIsDarkMode] = useState(true);
+    const [expandedMenus, setExpandedMenus] = useState({ Bills: false });
     const location = useLocation();
 
     const navigation = [
         { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
         { name: 'Companies', icon: Building2, path: '/companies' },
-        { name: 'Invoice Bills', icon: Receipt, path: '/invoices' },
-        { name: 'Vendor Bills', icon: ScrollText, path: '/vendor-bills' },
+        {
+            name: 'Bills',
+            icon: Receipt,
+            children: [
+                { name: 'Invoice Bills', icon: Receipt, path: '/invoices' },
+                { name: 'Vendor Bills', icon: ScrollText, path: '/vendor-bills' },
+            ]
+        },
         { name: 'Admins', icon: Shield, path: '/admins' },
         { name: 'Users', icon: Users, path: '/users' },
+        { name: 'Permissions', icon: Lock, path: '/permissions' },
         { name: 'Reports', icon: BarChart3, path: '/reports' },
         { name: 'Audit Logs', icon: FileText, path: '/audit-logs' },
         { name: 'Settings', icon: Settings, path: '/settings' },
@@ -30,6 +38,10 @@ const DashboardLayout = () => {
     }, [isDarkMode]);
 
     const toggleTheme = () => setIsDarkMode(!isDarkMode);
+
+    const toggleMenu = (menuName) => {
+        setExpandedMenus(prev => ({ ...prev, [menuName]: !prev[menuName] }));
+    };
 
     return (
         <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-main)] flex transition-colors duration-300">
@@ -50,8 +62,52 @@ const DashboardLayout = () => {
                     </button>
                 </div>
 
-                <nav className="p-4 space-y-2">
+                <nav className="p-4 space-y-2 overflow-y-auto max-h-[calc(100vh-64px)]">
                     {navigation.map((item) => {
+                        if (item.children) {
+                            const isExpanded = expandedMenus[item.name];
+                            const isChildActive = item.children.some(child => location.pathname === child.path);
+
+                            return (
+                                <div key={item.name} className="space-y-1">
+                                    <button
+                                        onClick={() => toggleMenu(item.name)}
+                                        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 ${isChildActive || isExpanded
+                                            ? 'text-[var(--text-main)] bg-[var(--bg-hover)]'
+                                            : 'text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]'
+                                            }`}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <item.icon size={20} />
+                                            <span className="font-medium">{item.name}</span>
+                                        </div>
+                                        {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                                    </button>
+
+                                    {isExpanded && (
+                                        <div className="pl-4 space-y-1 mt-1 transition-all">
+                                            {item.children.map((child) => {
+                                                const isActive = location.pathname === child.path;
+                                                return (
+                                                    <Link
+                                                        key={child.name}
+                                                        to={child.path}
+                                                        className={`flex items-center gap-3 px-4 py-2 rounded-xl transition-all duration-200 ${isActive
+                                                            ? 'bg-[var(--primary)] text-white shadow-lg shadow-indigo-500/20'
+                                                            : 'text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]'
+                                                            }`}
+                                                    >
+                                                        <child.icon size={18} />
+                                                        <span className="font-medium text-sm">{child.name}</span>
+                                                    </Link>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        }
+
                         const isActive = location.pathname === item.path;
                         return (
                             <Link

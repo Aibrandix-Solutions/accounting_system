@@ -8,8 +8,10 @@ import {
     Globe,
     Shield,
     FileText,
-    Activity
+    Activity,
+    Calendar
 } from 'lucide-react';
+import ActiveUsersLog from '../../components/dashboard/ActiveUsersLog';
 
 const AuditLogs = () => {
     // Mock Data

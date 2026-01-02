@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/super-admin/Dashboard';
 import InvoiceBills from './pages/super-admin/InvoiceBills';
 import VendorBills from './pages/super-admin/VendorBills';
 import CompanyManagement from './pages/super-admin/CompanyManagement';
@@ -9,6 +9,7 @@ import UserManagement from './pages/super-admin/UserManagement';
 import Reports from './pages/super-admin/Reports';
 import AuditLogs from './pages/super-admin/AuditLogs';
 import SystemSettings from './pages/super-admin/SystemSettings';
+import PermissionManagement from './pages/super-admin/PermissionManagement';
 import './App.css';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="vendor-bills" element={<VendorBills />} />
           <Route path="reports" element={<Reports />} />
           <Route path="audit-logs" element={<AuditLogs />} />
+          <Route path="permissions" element={<PermissionManagement />} />
           <Route path="settings" element={<SystemSettings />} />
         </Route>
       </Routes>

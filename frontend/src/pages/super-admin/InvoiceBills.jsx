@@ -11,15 +11,22 @@ import {
     Clock
 } from 'lucide-react';
 
+import CompanySelector from '../../components/common/CompanySelector';
+
 const InvoiceBills = () => {
+    const [selectedCompany, setSelectedCompany] = useState('');
     // Mock Data
     const [invoices, setInvoices] = useState([
-        { id: 'INV-001', company: 'TechFlow Solutions', amount: '$1,200.00', date: '2023-10-25', status: 'Paid', client: 'Alpha Corp' },
-        { id: 'INV-002', company: 'Innovate Inc', amount: '$850.50', date: '2023-10-26', status: 'Pending', client: 'Beta LLC' },
-        { id: 'INV-003', company: 'Global Traders', amount: '$3,400.00', date: '2023-10-27', status: 'Overdue', client: 'Gamma Systems' },
-        { id: 'INV-004', company: 'TechFlow Solutions', amount: '$500.00', date: '2023-10-28', status: 'Paid', client: 'Delta Group' },
-        { id: 'INV-005', company: 'NextGen AI', amount: '$12,000.00', date: '2023-10-29', status: 'Pending', client: 'Epsilon Tech' },
+        { id: 'INV-001', company: 'TechFlow Solutions', items: 'Web Development Services', amount: '$1,200.00', date: '2023-10-25', status: 'Paid', client: 'Alpha Corp' },
+        { id: 'INV-002', company: 'Innovate Inc', items: 'Cloud Hosting (Yearly)', amount: '$850.50', date: '2023-10-26', status: 'Pending', client: 'Beta LLC' },
+        { id: 'INV-003', company: 'Global Traders', items: 'Consulting Hours', amount: '$3,400.00', date: '2023-10-27', status: 'Overdue', client: 'Gamma Systems' },
+        { id: 'INV-004', company: 'TechFlow Solutions', items: 'Maintenance Package', amount: '$500.00', date: '2023-10-28', status: 'Paid', client: 'Delta Group' },
+        { id: 'INV-005', company: 'NextGen AI', items: 'AI Model Training', amount: '$12,000.00', date: '2023-10-29', status: 'Pending', client: 'Epsilon Tech' },
     ]);
+
+    const filteredInvoices = selectedCompany
+        ? invoices.filter(inv => inv.company === selectedCompany)
+        : invoices;
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -61,6 +68,11 @@ const InvoiceBills = () => {
                     />
                 </div>
                 <div className="hidden md:flex items-center gap-2">
+                    <CompanySelector
+                        selectedCompany={selectedCompany}
+                        onSelect={setSelectedCompany}
+                        className="w-48"
+                    />
                     <select className="bg-[var(--bg-dark)] border border-[var(--border-color)] text-[var(--text-main)] rounded-lg px-4 py-2 focus:outline-none focus:border-[var(--primary)]">
                         <option>All Statuses</option>
                         <option>Paid</option>
@@ -83,6 +95,7 @@ const InvoiceBills = () => {
                                 </th>
                                 <th className="p-4 text-sm font-semibold text-[var(--text-muted)]">Company</th>
                                 <th className="p-4 text-sm font-semibold text-[var(--text-muted)]">Client</th>
+                                <th className="p-4 text-sm font-semibold text-[var(--text-muted)]">Item Detail</th>
                                 <th className="p-4 text-sm font-semibold text-[var(--text-muted)]">
                                     <div className="flex items-center gap-1 cursor-pointer hover:text-[var(--text-main)]">
                                         Amount <ArrowUpDown size={14} />
@@ -94,11 +107,12 @@ const InvoiceBills = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {invoices.map((invoice, index) => (
+                            {filteredInvoices.map((invoice, index) => (
                                 <tr key={invoice.id} className="border-b border-[var(--border-color)] last:border-0 hover:bg-[var(--bg-hover)] transition-colors">
                                     <td className="p-4 font-medium text-[var(--text-main)]">{invoice.id}</td>
                                     <td className="p-4 text-[var(--text-muted)]">{invoice.company}</td>
                                     <td className="p-4 text-[var(--text-muted)]">{invoice.client}</td>
+                                    <td className="p-4 text-[var(--text-main)] font-medium">{invoice.items}</td>
                                     <td className="p-4 font-semibold text-[var(--text-main)]">{invoice.amount}</td>
                                     <td className="p-4 text-[var(--text-muted)]">{invoice.date}</td>
                                     <td className="p-4">

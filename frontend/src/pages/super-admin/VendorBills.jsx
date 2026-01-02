@@ -12,15 +12,22 @@ import {
     FileText
 } from 'lucide-react';
 
+import CompanySelector from '../../components/common/CompanySelector';
+
 const VendorBills = () => {
+    const [selectedCompany, setSelectedCompany] = useState('');
     // Mock Data
     const [bills, setBills] = useState([
-        { id: 'BILL-089', vendor: 'Office Supplies Co.', date: '2023-11-01', dueDate: '2023-11-15', amount: '$450.00', status: 'Unpaid', company: 'TechFlow Solutions' },
-        { id: 'BILL-090', vendor: 'Cloud Services Inc', date: '2023-11-02', dueDate: '2023-11-16', amount: '$2,100.00', status: 'Paid', company: 'Innovate Inc' },
-        { id: 'BILL-091', vendor: 'Marketing Gurus', date: '2023-11-03', dueDate: '2023-11-10', amount: '$5,000.00', status: 'Overdue', company: 'Global Traders' },
-        { id: 'BILL-092', vendor: 'Office Supplies Co.', date: '2023-11-04', dueDate: '2023-11-18', amount: '$120.00', status: 'Unpaid', company: 'TechFlow Solutions' },
-        { id: 'BILL-093', vendor: 'Legal Advisors LLP', date: '2023-11-05', dueDate: '2023-11-20', amount: '$1,500.00', status: 'Paid', company: 'NextGen AI' },
+        { id: 'BILL-089', vendor: 'Office Supplies Co.', items: 'Printer Paper (50 Reams)', date: '2023-11-01', dueDate: '2023-11-15', amount: '$450.00', status: 'Unpaid', company: 'TechFlow Solutions' },
+        { id: 'BILL-090', vendor: 'Cloud Services Inc', items: 'AWS Monthly Charges', date: '2023-11-02', dueDate: '2023-11-16', amount: '$2,100.00', status: 'Paid', company: 'Innovate Inc' },
+        { id: 'BILL-091', vendor: 'Marketing Gurus', items: 'Ad Campaign Management', date: '2023-11-03', dueDate: '2023-11-10', amount: '$5,000.00', status: 'Overdue', company: 'Global Traders' },
+        { id: 'BILL-092', vendor: 'Office Supplies Co.', items: 'Ergonomic Chairs (x2)', date: '2023-11-04', dueDate: '2023-11-18', amount: '$120.00', status: 'Unpaid', company: 'TechFlow Solutions' },
+        { id: 'BILL-093', vendor: 'Legal Advisors LLP', items: 'Contract Review', date: '2023-11-05', dueDate: '2023-11-20', amount: '$1,500.00', status: 'Paid', company: 'NextGen AI' },
     ]);
+
+    const filteredBills = selectedCompany
+        ? bills.filter(bill => bill.company === selectedCompany)
+        : bills;
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -62,6 +69,11 @@ const VendorBills = () => {
                     />
                 </div>
                 <div className="hidden md:flex items-center gap-2">
+                    <CompanySelector
+                        selectedCompany={selectedCompany}
+                        onSelect={setSelectedCompany}
+                        className="w-48"
+                    />
                     <select className="bg-[var(--bg-dark)] border border-[var(--border-color)] text-[var(--text-main)] rounded-lg px-4 py-2 focus:outline-none focus:border-[var(--primary)]">
                         <option>All Statuses</option>
                         <option>Paid</option>
@@ -84,6 +96,7 @@ const VendorBills = () => {
                                 </th>
                                 <th className="p-4 text-sm font-semibold text-[var(--text-muted)]">Vendor</th>
                                 <th className="p-4 text-sm font-semibold text-[var(--text-muted)]">Billed Company</th>
+                                <th className="p-4 text-sm font-semibold text-[var(--text-muted)]">Item Detail</th>
                                 <th className="p-4 text-sm font-semibold text-[var(--text-muted)]">
                                     <div className="flex items-center gap-1 cursor-pointer hover:text-[var(--text-main)]">
                                         Amount <ArrowUpDown size={14} />
@@ -95,11 +108,12 @@ const VendorBills = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {bills.map((bill, index) => (
+                            {filteredBills.map((bill, index) => (
                                 <tr key={bill.id} className="border-b border-[var(--border-color)] last:border-0 hover:bg-[var(--bg-hover)] transition-colors">
                                     <td className="p-4 font-medium text-[var(--text-main)]">{bill.id}</td>
                                     <td className="p-4 text-[var(--text-muted)]">{bill.vendor}</td>
                                     <td className="p-4 text-[var(--text-muted)]">{bill.company}</td>
+                                    <td className="p-4 text-[var(--text-main)] font-medium">{bill.items}</td>
                                     <td className="p-4 font-semibold text-[var(--text-main)]">{bill.amount}</td>
                                     <td className="p-4 text-[var(--text-muted)]">{bill.dueDate}</td>
                                     <td className="p-4">

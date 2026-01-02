@@ -1,147 +1,228 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-    Download,
-    Calendar,
     BarChart3,
-    PieChart,
+    FileText,
     TrendingUp,
-    Users,
-    Building2,
+    CreditCard,
     DollarSign,
-    FileText
+    PieChart,
+    Activity,
+    Shield,
+    Calendar,
+    Download,
+    Filter,
+    ArrowLeft,
+    Search,
+    ChevronDown
 } from 'lucide-react';
-import {
-    AreaChart,
-    Area,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer,
-    BarChart,
-    Bar,
-    Legend
-} from 'recharts';
 
-const Reports = () => {
-    // Mock Data for Charts
-    const revenueData = [
-        { name: 'Jan', system: 4000, subscriptions: 2400 },
-        { name: 'Feb', system: 3000, subscriptions: 1398 },
-        { name: 'Mar', system: 2000, subscriptions: 9800 },
-        { name: 'Apr', system: 2780, subscriptions: 3908 },
-        { name: 'May', system: 1890, subscriptions: 4800 },
-        { name: 'Jun', system: 2390, subscriptions: 3800 },
-        { name: 'Jul', system: 3490, subscriptions: 4300 },
-    ];
+// --- Configuration & Mock Data ---
 
-    const companySupportData = [
-        { name: 'TechFlow', tickets: 12 },
-        { name: 'Innovate', tickets: 12 },
-        { name: 'Global', tickets: 5 },
-        { name: 'NextGen', tickets: 8 },
-        { name: 'Alpha', tickets: 15 },
-    ];
+const REPORT_CATEGORIES = [
+    {
+        title: 'Core Financial',
+        color: 'indigo',
+        icon: FileText,
+        reports: [
+            { id: 'gl', title: 'General Ledger', desc: 'Complete record of all financial transactions.' },
+            { id: 'tb', title: 'Trial Balance', desc: 'List of all ledger account balances.' },
+            { id: 'pl', title: 'Profit and Loss', desc: 'Revenue, costs, and expenses summary.' },
+            { id: 'bs', title: 'Balance Sheet', desc: 'Assets, liabilities, and equity snapshot.' }
+        ]
+    },
+    {
+        title: 'Sales & Revenue',
+        color: 'emerald',
+        icon: TrendingUp,
+        reports: [
+            { id: 'sales_inv', title: 'Sales by Invoice', desc: 'Detailed sales broken down by invoice.' },
+            { id: 'sales_cust', title: 'Sales by Customer', desc: 'Revenue analysis per customer.' },
+            { id: 'ar_aging', title: 'A/R Aging', desc: 'Unpaid invoices and payment delays.' }
+        ]
+    },
+    {
+        title: 'Purchase & Expense',
+        color: 'rose',
+        icon: CreditCard,
+        reports: [
+            { id: 'purchases', title: 'Purchase Report', desc: 'Detailed history of all purchases.' },
+            { id: 'ap_aging', title: 'A/P Aging', desc: 'Outstanding bills and upcoming payments.' },
+            { id: 'expense_cat', title: 'Expenses by Category', desc: 'Breakdown of spending by category.' }
+        ]
+    },
+    {
+        title: 'Tax & Compliance',
+        color: 'amber',
+        icon: Shield,
+        reports: [
+            { id: 'tax_summary', title: 'Tax Summary', desc: 'Collected and paid tax (VAT/GST) report.' },
+            { id: 'wht', title: 'Withholding Tax', desc: 'Details of taxes withheld on payments.' }
+        ]
+    },
+    {
+        title: 'System & Security',
+        color: 'slate',
+        icon: Activity,
+        reports: [
+            { id: 'audit_log', title: 'Audit Log', desc: 'Tracked user activities and system changes.' },
+            { id: 'user_activity', title: 'User Activity', desc: 'Login history and feature usage stats.' }
+        ]
+    }
+];
 
-    const reportTypes = [
-        { title: 'System Usage', desc: 'Active users, storage, and API calls.', icon: ActivityIcon, color: 'blue' },
-        { title: 'Revenue Summary', desc: 'Monthly subscription and fee breakdown.', icon: DollarIcon, color: 'emerald' },
-        { title: 'Admin Performance', desc: 'Audit logs and response times.', icon: ShieldIcon, color: 'purple' },
-        { title: 'Company Growth', desc: 'New organizations and retention rates.', icon: BuildingIcon, color: 'orange' },
+// Mock Table Data Generator
+const generateMockData = (reportId) => {
+    const baseData = [
+        { date: '2024-01-15', ref: 'INV-001', entity: 'TechFlow Solutions', type: 'Sales', amount: 4500.00, status: 'Completed' },
+        { date: '2024-01-16', ref: 'BILL-023', entity: 'Office Depot', type: 'Expense', amount: 120.50, status: 'Paid' },
+        { date: '2024-01-18', ref: 'INV-002', entity: 'Innovate Inc', type: 'Sales', amount: 2300.00, status: 'Pending' },
+        { date: '2024-01-20', ref: 'PAY-005', entity: 'John Doe', type: 'Salary', amount: 3500.00, status: 'Processed' },
+        { date: '2024-01-22', ref: 'TAX-Q1', entity: 'Tax Authority', type: 'Tax', amount: 890.00, status: 'Accrued' },
     ];
+    return Array(5).fill(baseData).flat().map((item, i) => ({ ...item, id: i, ref: `${item.ref}-${i}` }));
+};
+
+// --- Components ---
+
+const ReportCard = ({ title, desc, onClick }) => (
+    <div
+        onClick={onClick}
+        className="glass-card p-4 rounded-xl border border-[var(--border-color)] hover:bg-[var(--bg-hover)] cursor-pointer transition-all group"
+    >
+        <h3 className="font-semibold text-[var(--text-main)] group-hover:text-[var(--primary)] transition-colors">{title}</h3>
+        <p className="text-sm text-[var(--text-muted)] mt-1">{desc}</p>
+    </div>
+);
+
+const CategorySection = ({ category, onSelectReport }) => (
+    <div className="space-y-4">
+        <div className="flex items-center gap-2 mb-2">
+            <div className={`p-2 rounded-lg bg-${category.color}-500/10 text-${category.color}-500`}>
+                <category.icon size={20} />
+            </div>
+            <h2 className="text-lg font-bold text-[var(--text-main)]">{category.title}</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {category.reports.map(report => (
+                <ReportCard
+                    key={report.id}
+                    title={report.title}
+                    desc={report.desc}
+                    onClick={() => onSelectReport(report)}
+                />
+            ))}
+        </div>
+    </div>
+);
+
+const ReportViewer = ({ report, onBack }) => {
+    const data = generateMockData(report.id);
 
     return (
         <div className="space-y-6 animate-fade-in">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-[var(--text-main)]">System Reports</h1>
-                    <p className="text-[var(--text-muted)]">Analyze performance and generate detailed insights.</p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-main)] rounded-xl hover:bg-[var(--bg-hover)] transition-colors">
-                        <Calendar size={18} />
-                        <span>Last 30 Days</span>
+            {/* Toolbar */}
+            <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={onBack}
+                        className="p-2 hover:bg-[var(--bg-hover)] rounded-lg text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
+                    >
+                        <ArrowLeft size={20} />
                     </button>
-                    <button className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white rounded-xl hover:opacity-90 transition-all shadow-lg shadow-indigo-500/20">
+                    <div>
+                        <h1 className="text-2xl font-bold text-[var(--text-main)]">{report.title}</h1>
+                        <p className="text-sm text-[var(--text-muted)]">Generated on {new Date().toLocaleDateString()}</p>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-2 w-full md:w-auto">
+                    <button className="flex items-center gap-2 px-3 py-2 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg text-sm hover:bg-[var(--bg-hover)]">
+                        <Calendar size={16} />
+                        <span>This Month</span>
+                    </button>
+                    <button className="flex items-center gap-2 px-3 py-2 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg text-sm hover:bg-[var(--bg-hover)]">
+                        <Filter size={16} />
+                        <span>Filter</span>
+                    </button>
+                    <div className="h-6 w-px bg-[var(--border-color)] mx-2"></div>
+                    <button className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--primary-hover)] shadow-lg shadow-indigo-500/20">
                         <Download size={18} />
-                        <span>Export All</span>
+                        <span>Export</span>
                     </button>
                 </div>
             </div>
 
-            {/* Report Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {reportTypes.map((report, index) => (
-                    <div key={index} className="glass-card p-6 rounded-2xl border border-[var(--border-color)] hover:shadow-lg transition-all cursor-pointer group">
-                        <div className={`w-12 h-12 rounded-xl bg-${report.color}-500/10 flex items-center justify-center text-${report.color}-500 mb-4 group-hover:scale-110 transition-transform`}>
-                            <report.icon size={24} />
-                        </div>
-                        <h3 className="text-lg font-bold text-[var(--text-main)] mb-1">{report.title}</h3>
-                        <p className="text-sm text-[var(--text-muted)]">{report.desc}</p>
-                    </div>
-                ))}
-            </div>
-
-            {/* Charts Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Revenue Chart */}
-                <div className="glass-card p-6 rounded-2xl border border-[var(--border-color)]">
-                    <h3 className="text-lg font-bold text-[var(--text-main)] mb-6 flex items-center gap-2">
-                        <TrendingUp size={20} className="text-emerald-500" />
-                        Revenue Trends
-                    </h3>
-                    <div className="h-80">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={revenueData}>
-                                <defs>
-                                    <linearGradient id="colorSystem" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0} />
-                                    </linearGradient>
-                                    <linearGradient id="colorSubs" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#10B981" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" vertical={false} />
-                                <XAxis dataKey="name" stroke="var(--text-muted)" />
-                                <YAxis stroke="var(--text-muted)" />
-                                <Tooltip contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)', color: 'var(--text-main)' }} />
-                                <Area type="monotone" dataKey="system" stackId="1" stroke="#8B5CF6" fill="url(#colorSystem)" />
-                                <Area type="monotone" dataKey="subscriptions" stackId="1" stroke="#10B981" fill="url(#colorSubs)" />
-                            </AreaChart>
-                        </ResponsiveContainer>
-                    </div>
-                </div>
-
-                {/* Support Chart */}
-                <div className="glass-card p-6 rounded-2xl border border-[var(--border-color)]">
-                    <h3 className="text-lg font-bold text-[var(--text-main)] mb-6 flex items-center gap-2">
-                        <Building2 size={20} className="text-blue-500" />
-                        Company Support Tickets
-                    </h3>
-                    <div className="h-80">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={companySupportData}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" vertical={false} />
-                                <XAxis dataKey="name" stroke="var(--text-muted)" />
-                                <YAxis stroke="var(--text-muted)" />
-                                <Tooltip contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)', color: 'var(--text-main)' }} cursor={{ fill: 'var(--bg-hover)' }} />
-                                <Bar dataKey="tickets" fill="#3B82F6" radius={[4, 4, 0, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
+            {/* Data Table */}
+            <div className="glass-card rounded-xl border border-[var(--border-color)] overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="bg-[var(--bg-hover)] border-b border-[var(--border-color)]">
+                                <th className="p-4 text-sm font-semibold text-[var(--text-muted)] w-32">Date</th>
+                                <th className="p-4 text-sm font-semibold text-[var(--text-muted)] w-40">Reference</th>
+                                <th className="p-4 text-sm font-semibold text-[var(--text-muted)]">Entity / Description</th>
+                                <th className="p-4 text-sm font-semibold text-[var(--text-muted)] w-32">Type</th>
+                                <th className="p-4 text-sm font-semibold text-[var(--text-muted)] w-32 text-right">Amount</th>
+                                <th className="p-4 text-sm font-semibold text-[var(--text-muted)] w-24 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.map((row) => (
+                                <tr key={row.id} className="border-b border-[var(--border-color)] last:border-0 hover:bg-[var(--bg-hover)] transition-colors">
+                                    <td className="p-4 text-sm font-medium text-[var(--text-main)]">{row.date}</td>
+                                    <td className="p-4 text-sm text-[var(--text-muted)] font-mono">{row.ref}</td>
+                                    <td className="p-4 text-sm text-[var(--text-main)]">{row.entity}</td>
+                                    <td className="p-4 text-sm"><span className="px-2 py-1 rounded-md bg-blue-500/10 text-blue-500 text-xs font-medium">{row.type}</span></td>
+                                    <td className="p-4 text-sm font-bold text-[var(--text-main)] text-right">${row.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                                    <td className="p-4 text-center">
+                                        <span className="px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-xs font-bold">
+                                            {row.status}
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     );
 };
 
-// Simple Icon Wrappers to avoid reference errors in mock array
-const ActivityIcon = (props) => <BarChart3 {...props} />;
-const DollarIcon = (props) => <DollarSign {...props} />;
-const ShieldIcon = (props) => <Users {...props} />;
-const BuildingIcon = (props) => <Building2 {...props} />;
+// --- Main Page ---
+
+const Reports = () => {
+    const [selectedReport, setSelectedReport] = useState(null);
+
+    return (
+        <div className="animate-fade-in">
+            {!selectedReport ? (
+                <div className="space-y-8">
+                    {/* Hub Header */}
+                    <div>
+                        <h1 className="text-3xl font-bold text-[var(--text-main)]">Reports Center</h1>
+                        <p className="text-[var(--text-muted)] mt-1">Access financial statements, transaction histories, and system logs.</p>
+                    </div>
+
+                    {/* Categories */}
+                    <div className="space-y-8">
+                        {REPORT_CATEGORIES.map((category, index) => (
+                            <CategorySection
+                                key={index}
+                                category={category}
+                                onSelectReport={setSelectedReport}
+                            />
+                        ))}
+                    </div>
+                </div>
+            ) : (
+                <ReportViewer
+                    report={selectedReport}
+                    onBack={() => setSelectedReport(null)}
+                />
+            )}
+        </div>
+    );
+};
 
 export default Reports;
