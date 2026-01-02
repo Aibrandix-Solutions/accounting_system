@@ -16,4 +16,4 @@ Route::get('/jwt-check', function () {
         'env' => env('JWT_SECRET'),
         'config' => config('jwt.secret'),
     ]);
-});
+});                                                             
