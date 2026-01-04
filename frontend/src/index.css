@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@config "../tailwind.config.js";
+
 
 @layer base {
   :root {
@@ -20,20 +20,44 @@
     /* Slate 900 */
     --color-fin-text-muted: #64748b;
     /* Slate 500 */
+
+    /* Generic Aliases */
+    --text-main: var(--color-fin-text);
+    --text-muted: var(--color-fin-text-muted);
+    --bg-dark: var(--color-fin-bg);
+    --bg-card: var(--color-fin-card);
+    --border-color: var(--color-fin-border);
+    --primary: var(--color-fin-primary);
+    --bg-hover: var(--color-fin-input);
   }
 
   /* Dark Mode Overrides */
   .dark {
-    --color-fin-bg: #0B1120;
-    --color-fin-card: #151e32;
-    --color-fin-input: #1e293b;
-    --color-fin-border: #334155;
+    --color-fin-bg: #0f172a;
+    /* Slate 900 - Main Background */
+    --color-fin-card: #1e293b;
+    /* Slate 800 - Cards/Sidebar */
+    --color-fin-input: #334155;
+    /* Slate 700 - Inputs */
+    --color-fin-border: #1e293b;
+    /* Slate 800 - Borders (matches card for seamless look) */
     --color-fin-primary: #6366f1;
+    /* Indigo 500 - Primary Brand */
     --color-fin-secondary: #8b5cf6;
-    --color-fin-text: #e2e8f0;
-    /* Slate 200 */
+    /* Violet 500 */
+    --color-fin-text: #f8fafc;
+    /* Slate 50 - Main Text */
     --color-fin-text-muted: #94a3b8;
-    /* Slate 400 */
+    /* Slate 400 - Secondary Text */
+
+    /* Generic Aliases Dark Mode */
+    --text-main: var(--color-fin-text);
+    --text-muted: var(--color-fin-text-muted);
+    --bg-dark: var(--color-fin-bg);
+    --bg-card: var(--color-fin-card);
+    --border-color: var(--color-fin-border);
+    --primary: var(--color-fin-primary);
+    --bg-hover: var(--color-fin-input);
   }
 
   body {
